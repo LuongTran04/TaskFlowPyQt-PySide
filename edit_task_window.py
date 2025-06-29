@@ -19,26 +19,26 @@ class EditTaskWindow(QWidget):
     def init_ui(self):
         layout = QVBoxLayout()
         
-        # Task Name
+        # Tên task
         layout.addWidget(QLabel("Task Name:"))
         self.name_input = QLineEdit()
-        self.name_input.setText(self.task.name)
+        self.name_input.setText(str(self.task.name) if self.task.name is not None else "")
         layout.addWidget(self.name_input)
         
-        # Due Date
+        # Deadline
         layout.addWidget(QLabel("Due Date:"))
         self.due_date_input = QDateEdit()
         self.due_date_input.setCalendarPopup(True)
         self.due_date_input.setDate(QDate.fromString(self.task.due_date, "yyyy-MM-dd"))
         layout.addWidget(self.due_date_input)
         
-        # Description
+        # Mô tả
         layout.addWidget(QLabel("Description:"))
         self.description_input = QLineEdit()
         self.description_input.setText(self.task.description)
         layout.addWidget(self.description_input)
         
-        # Save Button
+        # Nút lưu thay đổi
         save_button = QPushButton("Save Changes")
         save_button.clicked.connect(self.save_task)
         layout.addWidget(save_button)
