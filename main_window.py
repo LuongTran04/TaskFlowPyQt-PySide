@@ -2,6 +2,7 @@ from PySide6.QtWidgets import (
     QMainWindow, QVBoxLayout, QHBoxLayout, QWidget, QLabel, 
     QListWidget, QListWidgetItem, QPushButton, QMessageBox
 )
+from PySide6.QtGui import QColor, QBrush, QFont
 from PySide6.QtCore import Qt
 from add_task_window import AddTaskWindow
 from edit_task_window import EditTaskWindow
@@ -23,15 +24,14 @@ class MainWindow(QMainWindow):
         
     def init_ui(self):
         # Màn hình chính 
-        main_layout = QVBoxLayout()
-        
-        title_label = QLabel("Task List")
-        title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        main_layout = QVBoxLayout() # Dùng QVBoxLayout để sắp xếp các widget theo chiều dọc
+        title_label = QLabel("Task List") 
+        title_label.setAlignment(Qt.AlignmentFlag.AlignCenter) # Căn giữa tiêu đề
         title_label.setStyleSheet("font-size: 20px; font-weight: bold; margin: 10px;")
         main_layout.addWidget(title_label)
         
         # Nút bấm 
-        buttons_layout = QHBoxLayout()
+        buttons_layout = QHBoxLayout() # Dùng QHBoxLayout để sắp xếp các nút bấm theo chiều ngang
         
         # Nút thêm task
         self.add_button = QPushButton("Add Task")
@@ -104,7 +104,7 @@ class MainWindow(QMainWindow):
         main_layout.addLayout(buttons_layout)
 
         # Danh sách task
-        self.task_list_widget = QListWidget()
+        self.task_list_widget = QListWidget() # Dùng QListWidget để hiển thị danh sách task
         self.task_list_widget.setStyleSheet("""
             QListWidget {
                 background-color: #f5f5f5;
@@ -125,7 +125,7 @@ class MainWindow(QMainWindow):
         
         
         # Thiết lập layout cho màn hình chính
-        central_widget = QWidget()
+        central_widget = QWidget() # Tạo một QWidget để chứa các widget khác
         central_widget.setLayout(main_layout)
         self.setCentralWidget(central_widget)
         
@@ -171,7 +171,7 @@ class MainWindow(QMainWindow):
             self,
             "Delete Task",
             "Are you sure you want to delete this task?",
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No 
         )
 
         if reply == QMessageBox.StandardButton.Yes:
@@ -200,6 +200,18 @@ class MainWindow(QMainWindow):
     def update_task_list(self):
         self.task_list_widget.clear()
         for task in self.taskflow:
-            item = QListWidgetItem(f"Task: {task.name} - Description: {task.description} - Due: {task.due_date}")
-            item.setData(Qt.ItemDataRole.UserRole, task)
+            # Hiển thị tên, mô tả và ngày hết hạn của task
+            item = QListWidgetItem(f"Task: {task.name} - Description: {task.description} - Due: {task.due_date}") 
+            item.setData(Qt.ItemDataRole.UserRole, task) # Lưu trữ đối tượng Task trong dữ liệu của item
+            
+            # Thiết lập font để xử lý gạch ngang
+            font = QFont()
+            if task.completed:
+                font.setStrikeOut(True)  # Gạch ngang nếu hoàn thành
+                item.setForeground(QBrush(QColor("gray")))  # Chữ xám
+            else:
+                font.setStrikeOut(False)
+                item.setForeground(QBrush(QColor("black")))  # Chữ đen
+
+            item.setFont(font)
             self.task_list_widget.addItem(item)
